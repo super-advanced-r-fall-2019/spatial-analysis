@@ -1,0 +1,36 @@
+Introduction to the sf package.
+ * High level overview of plotting in R, why you would want to do it?
+ * Overview of sf() package objects and why you should care
+ * Reading and creating shapefiles and rasters
+ * Applying transformations and spatial operations (e.g., creating a sampling grid)
+ * Plotting using sf and ggplot2
+ * Tips and tricks (including the issue I've grappled with a lot!)
+
+Why I found sf package (workflow between ArcGIS, crashing, duplicated outputs)
+Other packages for spatial stuff and why sf() (sp, RGeos, leaflet)
+
+Think through a potential project/workflow and think about
+what stuff would come up and how to address it. Although
+I probably have enough time to go through and show what the underlying
+functionality is.
+
+ggmap from ggplot lecture
+ * using map_data() to add background plots
+ * point plots of average temp
+ * polygon in map structure
+ * Q: format of spatial objects? shapefile? sp?
+ * A: depends on how comfortable you are, can find lots of stuff.
+ * geom_polygon is pretty straightforward, can't deal with projecting
+
+Lecture ran 1 pm to 2:45 pm (lots of content! but some is interactive)
+
+Dan's ideas:
+Keep overview super brief, lots of ways but this is a really nice way to go
+Do your data come spatial? Turn lat/lon into shapefiles
+Transforming coordinates
+Installing it (can be hard for linux) --> leave time for that and troubleshooting
+More time on actual spatial computations (e.g., intersections, sampling) rather than just making things look pretty.
+Point out that sf is for vector data, raster version is in production
+R Natural Earth package (database for maps, central repository)
+
+Tidy spatial stuff--super easy to bring in non-spatial data and join it to spatial stuff
