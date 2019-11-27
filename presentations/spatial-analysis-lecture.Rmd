@@ -4,8 +4,8 @@ subtitle: "FSH 507 Fall 2019"
 author: "Elizabeth Ng"
 date: " `r Sys.Date()`"
 output:
-  powerpoint_presentation: default
   ioslides_presentation: default
+  powerpoint_presentation: default
   html_document: default
   slidy_presentation: default
 ---
@@ -15,6 +15,45 @@ knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(gapminder)
 ```
+
+# Motivation
+
+- An example going back and forth between ArcGIS and R
+- Reproducible workflows!
+
+
+# Overview & Objectives
+
+- Introduction to the sf package
+- Reading and creating shapefiles
+- Applying transformations and spatial operations
+- Plotting using sf and ggplot2
+
+
+# Brief background on spatial analysis in R
+
+
+## R packages for spatial analysis
+
+- Some tools early on
+- `rgdal` released in 2003--import from more geographic data formats
+- `sp` released in 2005--creates spatial objects with classes and generic methods for points, lines, polygons, grids, and attribute data
+-  But still lacked ability to do geometric operations
+- `raster` released in 2010--support for raster operations and more
+
+
+## R packages linking to GIS software
+
+- `GRASS`, `spgrass6`, and `rgrass7`
+- `RSAGA`, `RPyGeo`, and `RQGIS`
+
+
+
+
+
+# Useful links
+https://georepository.com/crs_32619/WGS-84-UTM-zone-19N.html
+https://spatialreference.org/ref/epsg/2033/
 
 # R Markdown
 
