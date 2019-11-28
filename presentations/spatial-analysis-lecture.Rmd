@@ -12,8 +12,9 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-library(tidyverse)
-library(gapminder)
+
+library("tidyverse")
+library("sf")
 ```
 
 # Motivation
@@ -47,45 +48,60 @@ library(gapminder)
 - `GRASS`, `spgrass6`, and `rgrass7`
 - `RSAGA`, `RPyGeo`, and `RQGIS`
 
+## Visualization
+
+- `ggplot2`
+- `ggmap`
+- `rasterVis`
+- `tmap`
+- `leaflet`
+- `mapview`
+
+## Data models
+
+- *vector data model* uses points, lines, and polygons
+- *raster data model* divides surface into cells of constant size
+- today we'll be dealing with vector data using the `sf` package
+
+## Vector data model
+
+- based on points in a coordinate reference system (CRS)
+- stand alone points
+- linked together into lines and polygons
+- geographic CRS (lon/lat) gives distance from the origin in degrees
+- projected CRS (easting/northing) gives distance from the origin in km
+
+
+
+# `sf` Package
+
+## Simple Features for R
+
+- [Simple Features package](https://r-spatial.github.io/sf/index.html)
+- Based on [simple features ISO standards](https://en.wikipedia.org/wiki/Simple_Features) that are not R specific
+- can replace `sp`, `rdgal` for read/write, and `rgeos` for geometric operations
+
+## Basic structure
+
+- tibble for attribute data
+- geometry is a list column
+
+```{r}
+
+```
 
 
 
 
-# Useful links
+
+# Resources
+
+## Useful links
 https://georepository.com/crs_32619/WGS-84-UTM-zone-19N.html
 https://spatialreference.org/ref/epsg/2033/
 
-# R Markdown
-
-## Getting Started
-
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown for presentations see <https://bookdown.org/yihui/rmarkdown/presentations.html>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
-
-## Slide with Bullets
-
-- Bullet 1
-- Bullet 2
-- Bullet 3
-
-## Slide with R Output
-
-```{r cars, echo = TRUE}
-summary(cars)
-```
-
-## Slide with Plot
-
-```{r pressure}
-pressure %>% 
-  ggplot(aes(temperature, pressure)) + 
-  geom_point()
-
-```
-
-
-# Materials
+## Useful links
+[Spatial Data Science](https://keen-swartz-3146c4.netlify.com/)
 
 
 
