@@ -17,39 +17,102 @@ library("tidyverse")
 library("sf")
 ```
 
-# Motivation
+## Overview
+1. Motivation--reproducible workflows
+2. Brief intro to generic spatial data (crs, projections, raster vs vector data)
+3. Brief intro to spatial capabilities in R
+4. Intro to the sf package
+5. Reading and writing spatial data with sf (shapefiles, lat/lon, other data)
+6. Geometric operations with sf
+7. Making maps with sf and ggplot2
 
-- An example going back and forth between ArcGIS and R
-- Reproducible workflows!
+## Motivation
+
+* Who uses spatial data? 
+* Can you relate to this workflow?
+  - An example going back and forth between ArcGIS and `R`
+  - Frustrating!
+  - Wouldn't it be great if we could do this all in `R`
+* Reproducible workflows!
 
 
-# Overview & Objectives
+# Overview of spatial analysis
 
-- Introduction to the sf package
-- Reading and creating shapefiles
-- Applying transformations and spatial operations
-- Plotting using sf and ggplot2
+## Why do we need to deal with geographic data?
+* Interesting spatial questions
+* The earth is round
+* There are different models of the Earth
+  
+## Flat models of a round Earth
+* Depend on the scale (big or small matter more? where you are matters?)
+* On one hand, small areas are more easily modeled as a flat surface
+* But get your model wrong from continent to drone delivery matters
+* Model is described in a coordinate reference system (CRS)
+* Two types
+  - geographic CRS (lon/lat) gives distance from the origin in degrees
+  - projected CRS (easting/northing) gives distance from the origin in km
+- [ ] Datum??
+
+## Data models
+- *vector data model* uses points, lines, and polygons
+- *raster data model* divides surface into cells of constant size
+- today we'll be dealing with vector data using the `sf` package
+
+## Representation of spatial data
+* Vector
+  - think vector graphics (pdf)
+  - an equation for the object
+  - counts, lines, polygons
+  - typically think of x,y coordinates, but can have other dimensions
+* Raster
+  - think images with pixels (jpeg)
+  - divides area into small cells
+  - each cell gets a value
+  - aerial imagery, remote sensing, sattelite data
+
+## Representation of non-spatial data
+* Attributes
+  - Often other information we want to capture
+  - How many counts at a point?
+  - Length of a transect
+  - Land-cover type of a polygon
+  
+## Things we want to do with spatial software...
+1. Read/write spatial data
+2. Represent geographic and attribute data
+3. Transform between different models of Earth
+4. Geographic operations
+
+## Geographic/Spatial operations
+Relate to configuration in space 
+```{r}
+# Insert an image here, or make an example of a buffered river
+# with points, using sf()
+```
+
+
+## Things we want to do with spatial software...
+1. Read/write spatial data
+2. Represent geographic and attribute data
+3. Transform between different models of Earth
+4. Geographic operations
+5. Make maps!
 
 
 # Brief background on spatial analysis in R
 
-
 ## R packages for spatial analysis
-
 - Some tools early on
 - `rgdal` released in 2003--import from more geographic data formats
 - `sp` released in 2005--creates spatial objects with classes and generic methods for points, lines, polygons, grids, and attribute data
 -  But still lacked ability to do geometric operations
 - `raster` released in 2010--support for raster operations and more
 
-
 ## R packages linking to GIS software
-
 - `GRASS`, `spgrass6`, and `rgrass7`
 - `RSAGA`, `RPyGeo`, and `RQGIS`
 
 ## Visualization
-
 - `ggplot2`
 - `ggmap`
 - `rasterVis`
@@ -57,51 +120,101 @@ library("sf")
 - `leaflet`
 - `mapview`
 
-## Data models
+## Brief comparison of `sp` vs `sf`
+* `sp` older and more stable
+* `sf` gaining traction, lots of development, integrates well with `tidyverse`
+  - Based on [simple features ISO standards](https://en.wikipedia.org/wiki/Simple_Features) that are not R specific
+  - can replace `sp`, `rdgal` for read/write, and `rgeos` for geometric operations
 
-- *vector data model* uses points, lines, and polygons
-- *raster data model* divides surface into cells of constant size
-- today we'll be dealing with vector data using the `sf` package
+## Resources
+There is an overwhelming about of information available
 
-## Vector data model
-
-- based on points in a coordinate reference system (CRS)
-- stand alone points
-- linked together into lines and polygons
-- geographic CRS (lon/lat) gives distance from the origin in degrees
-- projected CRS (easting/northing) gives distance from the origin in km
-
-
+* [Simple Features package](https://r-spatial.github.io/sf/index.html)
+  - Vignettes, blogs, presentations
+  - [Cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/sf.pdf)
+  - [issue tracker](https://github.com/r-spatial/sf/issues/)
+* [r-spatial](https://www.r-spatial.org/about/) Edzer Pebesma's blog
+* [Spatial Data Science](https://keen-swartz-3146c4.netlify.com/)
+* [Geocomputation with R](https://geocompr.robinlovelace.net/)
+  - excellent in-depth treatment
+  - includes theory, examples, and covers rasters
+* Lots of others
+* Word of caution--`sf` has undergone rapid development in past ~5 years
+* Check dates on blogs, StackExchange, GitHub issues
+  
 
 # `sf` Package
 
-## Simple Features for R
-
-- [Simple Features package](https://r-spatial.github.io/sf/index.html)
-- Based on [simple features ISO standards](https://en.wikipedia.org/wiki/Simple_Features) that are not R specific
-- can replace `sp`, `rdgal` for read/write, and `rgeos` for geometric operations
-
 ## Basic structure
-
-- tibble for attribute data
-- geometry is a list column
+* What is a 'feature'?
+* tibble for attribute data
+* geometry is a list column
+* can have multiple types of geometry in one object
 
 ```{r}
-
+# Show an example
 ```
 
+## Manipulating objects
+* all functions begin with `st_`
+* manipulating geometry
+  - summary
+  - plot
+  - other default methods
+* manipulating attribute data
+  - works well with `dplyr`
+  - summarize
+  - filter etc.
+  
+  
+# Reading and Writing Data
 
+## Reading shapefiles
+* super straightforward...
 
-
-
-# Resources
-
-## Useful links
+## Converting lat/lon data to spatial object
+* need to set crs
 https://georepository.com/crs_32619/WGS-84-UTM-zone-19N.html
 https://spatialreference.org/ref/epsg/2033/
 
-## Useful links
-[Spatial Data Science](https://keen-swartz-3146c4.netlify.com/)
+## Other data sources
+* Download online (US Map...others?)
+* So much in packages
+* `naturalearth`
+* access to google maps??
+
+## Writing data
+* shapefiles
+* database connections
+
+## Exercises
+1. Download a shapefile at XYZ, read in R and summarize
+2. Upload lat/lon data in data file. Pick a CRS, save it as a shapefile
 
 
+# Geometric operations
+
+## So much functionality!
+* grids, intersections, sampling...
+* derived quantities
+* separate into things that function on 1 object vs. 2+
+
+## Give some examples...
+
+## Exercises
+1. How many points are within 10 km of this river?
+2. Create a 1 km x 1 km sampling grid and randomly select 10 survey locations. 
+
+
+# Making maps with `sf` and `ggplot2`
+
+## Basics
+
+## Using multiple types of data
+
+## Faceting with a basemap
+
+## Issues with legends
+
+## Adding compass rose and scale
 
