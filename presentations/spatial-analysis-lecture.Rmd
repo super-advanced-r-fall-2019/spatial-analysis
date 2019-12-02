@@ -4,19 +4,21 @@ subtitle: "FSH 507 Fall 2019"
 author: "Elizabeth Ng"
 date: " `r Sys.Date()`"
 output:
-  ioslides_presentation: default
+  ioslides_presentation:
+    smaller: true
   powerpoint_presentation: default
   html_document: default
   slidy_presentation: default
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, collapse = TRUE)
 
 library("rnaturalearth")
 library("tidyverse")
 library("sf")
 library("here")
+library("htmltab") # scrape html data
 ```
 
 ## Overview
@@ -85,36 +87,20 @@ knitr::include_graphics(here("imgs", "arc-to-R-workflow.gif"))
   - Length of a transect
   - Land-cover type of a polygon
 
-## Things we want to do with spatial software
+## Things we want from spatial software
 > 1. Read/write spatial data
 > 2. Represent geographic and attribute data
 > 3. Transform between different models of Earth
 > 4. Geographic operations
 > 5. Make maps
 
-## Geographic/Spatial operations
-Relate to configuration in space
-```{r}
-# Insert an image here, or make an example of a buffered river
-# with points, using sf()
-```
-
-
-## Things we want to do with spatial software...
-1. Read/write spatial data
-2. Represent geographic and attribute data
-3. Transform between different models of Earth
-4. Geographic operations
-5. Make maps!
-
 
 # Brief background on spatial analysis in R
 
 ## R packages for spatial analysis
-- Some tools early on
+- [Many tools for spatial analysis in R](https://cran.r-project.org/web/views/Spatial.html)
 - `rgdal` released in 2003--import from more geographic data formats
-- `sp` released in 2005--creates spatial objects with classes and generic methods for points, lines, polygons, grids, and attribute data
--  But still lacked ability to do geometric operations
+- `sp` released in 2005--creates spatial objects with classes and generic methods for points, lines, polygons, grids, and attribute data (but still lacked ability to do geometric operations)
 - `raster` released in 2010--support for raster operations and more
 
 ## R packages linking to GIS software
@@ -129,17 +115,13 @@ Relate to configuration in space
 - `leaflet`
 - `mapview`
 
-## Brief comparison of `sp` vs `sf`
-* `sp` older and more stable
-* `sf` gaining traction, lots of development, integrates well with `tidyverse`
-  - Based on [simple features ISO standards](https://en.wikipedia.org/wiki/Simple_Features) that are not R specific
-  - can replace `sp`, `rdgal` for read/write, and `rgeos` for geometric operations
-* [ ] Put diagram here? Showing how sf links to GDAL, GEOS, Proj.4 etc.
-
+## My choice: `sf`
+* Developed in 2016 with support from [R consortium](https://github.com/r-spatial/sf/blob/master/PROPOSAL.md)
+* Based on [simple features ISO standards](https://en.wikipedia.org/wiki/Simple_Features) that are not R specific
+* Replaces `sp`, `rdgal` for read/write, and `rgeos` for geometric operations
+* Integrates well with `tidyverse`
 
 ## Resources
-There is an overwhelming about of information available
-
 * [Simple Features package](https://r-spatial.github.io/sf/index.html)
   - Vignettes, blogs, presentations
   - [Cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/sf.pdf)
@@ -149,9 +131,8 @@ There is an overwhelming about of information available
 * [Geocomputation with R](https://geocompr.robinlovelace.net/)
   - excellent in-depth treatment
   - includes theory, examples, and covers rasters
-* Lots of others
-* Word of caution--`sf` has undergone rapid development in past ~5 years
-* Check dates on blogs, StackExchange, GitHub issues
+
+
 
 
 # `sf` Package
@@ -169,10 +150,13 @@ There is an overwhelming about of information available
   - can have multiple types of geometry in one object
 * class is `sfc` with bounding box `bbox` and `CRS` attributes
 
+---
+
 ```{r}
-# show an example
-# either code or use images of examples
-# ??? What happens if you `unnest` the geometry column?
+fileloc <- system.file("shape/nc.shp", package = "sf")
+nc <- read_sf(fileloc) %>%
+  select(AREA, NAME)
+print(nc)
 
 # Highlight parts
 # 1. list column (aka sfc)
@@ -182,86 +166,147 @@ There is an overwhelming about of information available
 
 ## `sf` and `tidyverse`
 * `sf` functions begin with `st_`
-* `sf` methods for `filter`, `arrange`, `distinct`, `group_by`, `ungroup`, `mutate`,
+* Methods for `summary`, `plot`
+* `sf` methods for `filter`, `arrange`, `distinct`, `group_by`, `ungroup`, `mutate`
 
-## Manipulating objects
-* manipulating geometry
-  - summary
-  - plot
-  - other default methods
-* manipulating attribute data
-  - works well with `dplyr`
-  - summarize
-  - filter etc.
 
-```{r}
-# Example manipulations? Or wait until after reading and writing?
+---
+```{r echo = TRUE}
+st_geometry(nc) %>% plot
+```
+
+---
+```{r echo = TRUE}
+# Default methods for objects
+plot(nc)
+```
+
+---
+```{r echo = TRUE}
+filter(nc, AREA > 0.2)
 ```
 
 
 # Reading and Writing Data
 
 ## Reading shapefiles
-* super straightforward...
-```{r}
+```{r echo = TRUE}
 fileloc <- system.file("shape/nc.shp", package = "sf")
 nc <- read_sf(fileloc)
-print(nc, n = 3)
-plot(nc, max.plot = 4)
 ```
+
 We can see that projection information is stored with the shapefile
-```{r}
+```{r echo = TRUE}
 st_crs(nc)
 ```
 
-## Converting lat/lon data to spatial object
-[see this link for info](https://edzer.github.io/UseR2017/)
-* `st_transform` transforms or converts coordinates to new reference system
-```{r}
-(a1 <- st_area(nc[1,])) # area, using geosphere::areaPolygon
-(a2 <- st_area(st_transform(nc[1, ], 32119))) # NC state plane, m
-(a3 <- st_area(st_transform(nc[1,], 2264)))  # NC state plane, US foot
+* used to convert coordinates (do projections) and do datum transformations
+* Proj.4 string or ESPG code contains this info
+* [Web](https://spatialreference.org/) [repositories](https://georepository.com/home.html) for ESPG and Proj.4 information
 
-units::set_units(a1, km^2)
-units::set_units(a2, km^2)
-units::set_units(a3, km^2)
-```
-
-* need to set crs
-https://georepository.com/crs_32619/WGS-84-UTM-zone-19N.html
-https://spatialreference.org/ref/epsg/2033/
-
-## Reference systems
-* handle coordinate systems, convert coordinates (do projections), and do datum transformations
-* `crs` object contains this information
-* Proj.4 string contains this info
-```{r}
+---
+```{r echo = TRUE}
 st_crs("+proj=longlat +datum=WGS84") # Proj.4 string"
 st_crs(3857)                         # ESPG code
 st_crs(3857)$units                   # check units
 st_crs(NA)                           # unknown (assumed planar/Cartesian)
 ```
 
+---
+* `st_transform` transforms or converts coordinates to [new reference system](https://edzer.github.io/UseR2017/)
+```{r echo = TRUE}
+(a1 <- st_area(nc[1,])) # area, using geosphere::areaPolygon
+(a2 <- st_area(st_transform(nc[1, ], 32119))) # NC state plane, m
+(a3 <- st_area(st_transform(nc[1,], 2264)))   # NC state plane, US foot
+```
+
+---
+```{r echo = TRUE}
+units::set_units(a1, km^2)
+units::set_units(a2, km^2)
+units::set_units(a3, km^2)
+```
+
+
 ## Other data sources
-* Convert other `Spatial*` objects using `st_as_sf`
-* Download online (US Map...others?)
-* So much in packages
-* `naturalearth`
-* access to google maps??
+> * Convert from other `Spatial*` objects using `st_as_sf`
+> * Convert long/lat data
+> * Packages such as `naturalearth`
+
+## Convert long/lat data
+```{r warning = FALSE}
+# Scrape some lat/lon data (see example at https://ryanpeek.github.io/2017-08-03-converting-XY-data-with-sf-package/)
+url <- "http://www.hotspringsdirectory.com/usa/ca/gps-usa-ca.html"
+df <- htmltab(url, which = 1, header = 1,
+              colNames = c("STATE","LAT","LONG","SpringName","Temp_F", "Temp_C", "AREA", "USGS_quad"))
+hotsprings_df <- df %>%
+  as_tibble() %>%
+  mutate(LAT = as.numeric(LAT),
+         LONG = as.numeric(LONG),
+         Temp_F = as.numeric(Temp_F),
+         Temp_C = as.numeric(Temp_C),
+         LONG = -LONG) %>%
+  na.omit()
+```
+
+```{r, echo = TRUE}
+head(hotsprings_df)
+```
+
+## Convert long/lat data
+Assume that these data are WGS84 (`crs = 4326`)
+```{r, echo = TRUE}
+hotsprings <- st_as_sf(hotsprings_df,
+                       coords = c("LONG", "LAT"),
+                       crs = 4326)
+head(hotsprings)
+```
+
+
+## Data from packages
+```{r, echo = TRUE}
+world <- ne_countries(scale = "medium", returnclass = "sf")
+st_geometry(world) %>% plot()
+```
 
 ## Writing data
 * shapefiles
 * database connections
+* use `st_write`
 
 ## Exercises
-1. Download a shapefile at XYZ, read in R and summarize
-2. Upload lat/lon data in data file. Pick a CRS, save it as a shapefile
+1. Load the Lake Tahoe shapefile (`data\h8_tahoe`). What is the `crs`? Plot the geometry.
+2. Upload `boat-launch-sites.csv` and plot the geometry. Save it as a shapefile. 
+
+## Exercise 1
+```{r echo = TRUE}
+tahoe <- read_sf(here("data", "h8_tahoe"))
+st_crs(tahoe)
+st_geometry(tahoe) %>% plot()
+```
+
+## Exercise 2
+```{r echo = TRUE}
+boats <- read.csv(here("data", "boat-launch-sites.csv"))
+boats_spatial <- st_as_sf(boats,
+                       coords = c("lon", "lat"),
+                       crs = 4326)
+st_geometry(boats_spatial) %>% plot
+```
+
+## Exercise 2
+```{r echo = TRUE}
+dir.create(here("data", "boat-launch-sites"))
+st_write(boats_spatial, here("data", "boat-launch-sites", "boat-launch-sites.shp", overwrite = TRUE))
+```
+
 
 
 # Geometric operations
 
-## Geometric operations
+## Types of geometric operations
 Single
+
 * logical predicates: (e.g., `is_valid`, `is_simple`)
 * quantities: (`length`, `area`)
 * dimensions: 0 = points, 1 = linear, 2 = surface
