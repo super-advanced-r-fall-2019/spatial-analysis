@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = FALSE)
 library("rnaturalearth")
 library("tidyverse")
 library("sf")
+library("here")
 ```
 
 ## Overview
@@ -29,90 +30,67 @@ library("sf")
 
 ## Motivation
 
-* Who uses spatial data?
-* Can you relate to this workflow?
-  - An example going back and forth between ArcGIS and `R`
-  - Frustrating!
-  - Wouldn't it be great if we could do this all in `R`
-* Reproducible workflows!
+```{r echo = FALSE, fig.align="center"}
+knitr::include_graphics(here("imgs", "arc-to-R-workflow.gif"))
+```
 
 
-# Overview of spatial analysis
+# Biref overview of spatial analysis
 
-## Why do we need to deal with spatial data?
+## Why spatial data?
 * Interesting spatial questions
-* The Earth is round-ish/spherioid
+* Earth is round-ish/spherioid
 * Maps and screens are flat, so we only see projected data
-* Projected distances, areas, shapes, and directions are often distorted
-* Coordinates are made up of 2-3 numbers that only have meaning when used together
-* [Reference](https://edzer.github.io/rstudio_conf/#6)
+* Projected distances, areas, shapes, and directions are distorted
 
-## (side note) Reference systems (?)
-* geodesic/geographic coordinates need
-  - an order (lat/long vs long/lat)
-  - a unit (rad, arc_degree)
-  - a datum (aka reference ellipsoid)
-    * how are we describing the shape of the Earth?
-    * "best" approximation depends on region and scale
-      - what origin is used?
-      - tectonic plates move over time
-      - e.g., WGS84, is an approximate model of Earth at sea level updated in 2004
-* (cartesian/projected coordinates)[https://www.axismaps.com/guide/general/map-projections/] need
-  - a unit (km, m)
-  - relationship to a datum/geodesic coordinates
-  - how to display a three dimensional object in two dimensions
-  - accurately display one of:
-    * area (Mercator)
-    * form (Azimuthal Equidistant)
-    * distance (Equirectangular)
-  - choice depends on what you're conveying, shape of the region
-  - e.g., use Tranverse Mercator for mapping long N-S region like Chile
-* two separate issues: how do we model Earth (datum) and how do we display it on a flat surface (projection)
+## Reference systems
+* [Geodesic/geographic coordinates](https://edzer.github.io/rstudio_conf/#6) need
+  - Order (lat/long vs long/lat)
+  - Units (rad, arc_degree)
+  - Datum (aka reference ellipsoid)
+    <!-- * how are we describing the shape of the Earth? -->
+    <!-- * "best" approximation depends on region and scale -->
+    <!--   - what origin is used? -->
+    <!--   - tectonic plates move over time -->
+    <!--   - e.g., WGS84, is an approximate model of Earth at sea level updated in 2004 -->
+* [Cartesian/projected coordinates](https://www.axismaps.com/guide/general/map-projections/) need
+  - Units (km, m)
+  - Relationship to a datum/geodesic coordinates
+  - How to display 3D object in 2D
+  - Accurately display one of: area (Mercator), form (Azimuthal Equidistant), distance (Equirectangular)
+  <!-- - choice depends on what you're conveying, shape of the region -->
+  <!-- - e.g., use Tranverse Mercator for mapping long N-S region like Chile -->
+* Two separate issues: how do we model Earth (datum) and how do we display it on a flat surface (projection)
 
 
-## Models of a round-ish Earth
-* There are different models of the Earth
-* Meaning of coordinates (lon/lat) depend on the geodetic datum
-* "_Geodetic datum_ is a coordinate reference system and a set of reference points used to locate places on Earth"[Wikipedia](https://en.m.wikipedia.org/wiki/Geodetic_datum)
-* "a datum is unlikely important when mapping continents, but it is when when drones try to deliver pizza" -[Edzer Pebesma]https://edzer.github.io/rstudio_conf/#6)
-* Depend on the scale (big or small matter more? where you are matters?)
-* On one hand, small areas are more easily modeled as a flat surface
-* But get your model wrong from continent to drone delivery matters
-* Model is described in a coordinate reference system (CRS)
-* Two types
-  - geographic CRS (lon/lat) gives distance from the origin in degrees
-  - projected CRS (easting/northing) gives distance from the origin in km
-- [ ] Datum??
-
-## Data models
-- *vector data model* uses points, lines, and polygons
-- *raster data model* divides surface into cells of constant size
-- today we'll be dealing with vector data using the `sf` package
+<!-- ## Models of a round-ish Earth -->
+<!-- * There are different models of the Earth -->
+<!-- * Meaning of coordinates (lon/lat) depend on the geodetic datum -->
+<!-- * "_Geodetic datum_ is a coordinate reference system and a set of reference points used to locate places on Earth"[Wikipedia](https://en.m.wikipedia.org/wiki/Geodetic_datum) -->
+<!-- * "a datum is unlikely important when mapping continents, but it is when when drones try to deliver pizza" -[Edzer Pebesma]https://edzer.github.io/rstudio_conf/#6) -->
+<!-- * Depend on the scale (big or small matter more? where you are matters?) -->
+<!-- * On one hand, small areas are more easily modeled as a flat surface -->
+<!-- * But get your model wrong from continent to drone delivery matters -->
+<!-- * Model is described in a coordinate reference system (CRS) -->
+<!-- * Two types -->
+<!--   - geographic CRS (lon/lat) gives distance from the origin in degrees -->
+<!--   - projected CRS (easting/northing) gives distance from the origin in km -->
+<!-- - [ ] Datum?? -->
 
 ## Representation of spatial data
-* Vector
-  - think vector graphics (pdf)
-  - an equation for the object
-  - counts, lines, polygons
-  - typically think of x,y coordinates, but can have other dimensions
-* Raster
-  - think images with pixels (jpeg)
-  - divides area into small cells
-  - each cell gets a value
-  - aerial imagery, remote sensing, sattelite data
-
-## Representation of non-spatial data
-* Attributes
-  - Often other information we want to capture
+- *Vector data model* uses points, lines, and polygons
+- *Raster data model* divides surface into cells of constant size
+- Non spatial attribute data
   - How many counts at a point?
   - Length of a transect
   - Land-cover type of a polygon
 
-## Things we want to do with spatial software...
-1. Read/write spatial data
-2. Represent geographic and attribute data
-3. Transform between different models of Earth
-4. Geographic operations
+## Things we want to do with spatial software
+> 1. Read/write spatial data
+> 2. Represent geographic and attribute data
+> 3. Transform between different models of Earth
+> 4. Geographic operations
+> 5. Make maps
 
 ## Geographic/Spatial operations
 Relate to configuration in space
