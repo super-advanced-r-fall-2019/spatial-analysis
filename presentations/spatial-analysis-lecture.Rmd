@@ -22,13 +22,13 @@ library("htmltab") # scrape html data
 ```
 
 ## Overview
-1. Motivation--reproducible workflows
-2. Brief intro to generic spatial data (crs, projections, raster vs vector data)
+1. Motivation
+2. Brief intro to generic spatial data
 3. Brief intro to spatial capabilities in R
 4. Intro to the sf package
-5. Reading and writing spatial data with sf (shapefiles, lat/lon, other data)
-6. Geometric operations with sf
-7. Making maps with sf and ggplot2
+5. Reading and writing spatial data with `sf`
+6. Geometric operations with `sf`
+7. Making maps with `sf` and `ggplot2`
 
 ## Motivation
 
@@ -37,7 +37,7 @@ knitr::include_graphics(here("imgs", "arc-to-R-workflow.gif"))
 ```
 
 
-# Biref overview of spatial analysis
+# Spatial analysis
 
 ## Why spatial data?
 * Interesting spatial questions
@@ -95,7 +95,7 @@ knitr::include_graphics(here("imgs", "arc-to-R-workflow.gif"))
 > 5. Make maps
 
 
-# Brief background on spatial analysis in R
+# Spatial analysis in R
 
 ## R packages for spatial analysis
 - [Many tools for spatial analysis in R](https://cran.r-project.org/web/views/Spatial.html)
@@ -135,7 +135,7 @@ knitr::include_graphics(here("imgs", "arc-to-R-workflow.gif"))
 
 
 
-# `sf` Package
+# `sf` package
 
 ## Simple features
 * _feature_ "abstraction of real world phenomena"
@@ -187,7 +187,7 @@ filter(nc, AREA > 0.2)
 ```
 
 
-# Reading and Writing Data
+# Reading and writing data
 
 ## Reading shapefiles
 ```{r echo = TRUE}
@@ -231,7 +231,7 @@ units::set_units(a3, km^2)
 ## Other data sources
 > * Convert from other `Spatial*` objects using `st_as_sf`
 > * Convert long/lat data
-> * Packages such as `naturalearth`
+> * Packages such as `rnaturalearth`
 
 ## Convert long/lat data
 ```{r warning = FALSE}
@@ -297,7 +297,7 @@ st_geometry(boats_spatial) %>% plot
 ## Exercise 2
 ```{r echo = TRUE}
 dir.create(here("data", "boat-launch-sites"))
-st_write(boats_spatial, here("data", "boat-launch-sites", "boat-launch-sites.shp", overwrite = TRUE))
+st_write(boats_spatial, here("data", "boat-launch-sites", "boat-launch-sites.shp"))
 ```
 
 
@@ -313,17 +313,78 @@ Single
 * derived geometries: `buffer`, `centroid`, `convex_hull` etc.
 
 Pairs or sets
+
 * predicates: `intersects`, `within`, `contains` etc.
 * quantities: `distance`
 * new geometries: `intersection`, `difference`, `union` etc.
 
-CHECK: what does predicate mean?
 
-## Give some examples...
+## Methods for simple features
+```{r, echo = TRUE}
+methods(class = "sf")
+```
 
-## Exercises
-1. How many points are within 10 km of this river?
-2. Create a 1 km x 1 km sampling grid and randomly select 10 survey locations.
+```{r}
+nc <- st_transform(nc, 32119) # NC state plane, m
+```
+
+## Logical operations
+```{r, echo = TRUE}
+nc1 <- nc[1:5, ]
+st_intersects(nc1, nc1, sparse = FALSE)
+```
+
+## Geometry generating operations
+```{r, echo = TRUE}
+opar <- par(mfrow = c(1,2))
+ncg <- st_geometry(nc[1:3,])
+plot(ncg, col = sf.colors(3, categorical = TRUE))
+
+u <- st_union(ncg)
+plot(u, lwd = 2)
+
+plot(st_intersection(ncg[1], ncg[2]), col = 'red', add = TRUE) # border
+plot(st_buffer(u, 10000), border = 'blue', add = TRUE)  # outer buffer
+plot(st_buffer(u, -5000), border = 'green', add = TRUE) # inner buffer
+```
+
+```{r}
+par(mfrow = c(1,1))
+```
+
+
+## More complicated example
+Where in North Carolina do four counties touch?
+```{r}
+plot(st_geometry(nc))
+```
+
+
+---
+```{r, echo = TRUE}
+pts <-  st_intersection(nc, nc)
+pts <- pts[st_dimension(pts) == 0, ] # dim of point intersection is 0
+plot(st_geometry(nc))
+plot(st_geometry(pts), add = TRUE, col = '#ff000044', pch = 16)
+```
+
+
+
+## Exercise
+How many hot springs are in Lake Tahoe?
+
+## Solution
+```{r, echo = TRUE}
+hotsprings <- st_transform(hotsprings, 2228) # California zone 3
+tahoe <- st_transform(tahoe, 2228)
+tahoe_hotsprings <- st_intersection(tahoe, hotsprings)
+
+plot(st_geometry(hotsprings))
+plot(st_geometry(tahoe), add = TRUE, col = "blue")
+plot(st_geometry(tahoe_hotsprings), add = TRUE, col = "red")
+```
+
+
 
 
 # Making maps with `sf` and `ggplot2`
@@ -331,15 +392,28 @@ CHECK: what does predicate mean?
 ## Basics
 * interfaces with `ggplot2` using `geom_sf`
 
-## Using multiple types of data
-
-## Faceting with a basemap
-
-## Issues with legends
-
-## Adding compass rose and scale
+---
+```{r}
+hotsprings <- st_transform(hotsprings, 4326) # California zone 3
+tahoe <- st_transform(tahoe, 4326)
+```
 
 
+```{r echo = TRUE}
+ggplot() +
+  geom_sf(data = tahoe, fill = "light blue") +
+  geom_sf(data = hotsprings, size = 4, shape = 23, fill = "darkred") +
+  coord_sf(xlim = c(-121, -119), ylim = c(38, 40))
+```
+
+## More complicated
+
+<img src=https://timogrossenbacher.ch/wp-content/uploads/2019/04/bm-thematic-bivariate-map-with-legend-1-2-1024x768.png" width ="600"/> 
+
+[Timo Grossenbacher](https://timogrossenbacher.ch/2019/04/bivariate-maps-with-ggplot2-and-sf/)
+
+## Exercise
+Work through [this example from r-spatial](https://www.r-spatial.org/r/2018/10/25/ggplot2-sf.html)
 
 # What about other types of data?
 
