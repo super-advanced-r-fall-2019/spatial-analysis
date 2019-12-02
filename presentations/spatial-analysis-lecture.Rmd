@@ -28,7 +28,7 @@ library("sf")
 
 ## Motivation
 
-* Who uses spatial data? 
+* Who uses spatial data?
 * Can you relate to this workflow?
   - An example going back and forth between ArcGIS and `R`
   - Frustrating!
@@ -38,12 +38,42 @@ library("sf")
 
 # Overview of spatial analysis
 
-## Why do we need to deal with geographic data?
+## Why do we need to deal with spatial data?
 * Interesting spatial questions
-* The earth is round
+* The Earth is round-ish/spherioid
+* Maps and screens are flat, so we only see projected data
+* Projected distances, areas, shapes, and directions are often distorted
+* Coordinates are made up of 2-3 numbers that only have meaning when used together
+* [Reference](https://edzer.github.io/rstudio_conf/#6)
+
+## (side note) Reference systems (?)
+* geodesic/geographic coordinates need
+  - an order (lat/long vs long/lat)
+  - a unit (rad, arc_degree)
+  - a datum (aka reference ellipsoid)
+    * how are we describing the shape of the Earth?
+    * "best" approximation depends on region and scale
+      - what origin is used?
+      - tectonic plates move over time
+      - e.g., WGS84, is an approximate model of Earth at sea level updated in 2004
+* (cartesian/projected coordinates)[https://www.axismaps.com/guide/general/map-projections/] need
+  - a unit (km, m)
+  - relationship to a datum/geodesic coordinates
+  - how to display a three dimensional object in two dimensions
+  - accurately display one of:
+    * area (Mercator)
+    * form (Azimuthal Equidistant)
+    * distance (Equirectangular)
+  - choice depends on what you're conveying, shape of the region
+  - e.g., use Tranverse Mercator for mapping long N-S region like Chile
+* two separate issues: how do we model Earth (datum) and how do we display it on a flat surface (projection)
+
+
+## Models of a round-ish Earth
 * There are different models of the Earth
-  
-## Flat models of a round Earth
+* Meaning of coordinates (lon/lat) depend on the geodetic datum
+* "_Geodetic datum_ is a coordinate reference system and a set of reference points used to locate places on Earth"[Wikipedia](https://en.m.wikipedia.org/wiki/Geodetic_datum)
+* "a datum is unlikely important when mapping continents, but it is when when drones try to deliver pizza" -[Edzer Pebesma]https://edzer.github.io/rstudio_conf/#6)
 * Depend on the scale (big or small matter more? where you are matters?)
 * On one hand, small areas are more easily modeled as a flat surface
 * But get your model wrong from continent to drone delivery matters
@@ -76,7 +106,7 @@ library("sf")
   - How many counts at a point?
   - Length of a transect
   - Land-cover type of a polygon
-  
+
 ## Things we want to do with spatial software...
 1. Read/write spatial data
 2. Represent geographic and attribute data
@@ -84,7 +114,7 @@ library("sf")
 4. Geographic operations
 
 ## Geographic/Spatial operations
-Relate to configuration in space 
+Relate to configuration in space
 ```{r}
 # Insert an image here, or make an example of a buffered river
 # with points, using sf()
@@ -125,6 +155,8 @@ Relate to configuration in space
 * `sf` gaining traction, lots of development, integrates well with `tidyverse`
   - Based on [simple features ISO standards](https://en.wikipedia.org/wiki/Simple_Features) that are not R specific
   - can replace `sp`, `rdgal` for read/write, and `rgeos` for geometric operations
+* [ ] Put diagram here? Showing how sf links to GDAL, GEOS, Proj.4 etc.
+
 
 ## Resources
 There is an overwhelming about of information available
@@ -141,22 +173,39 @@ There is an overwhelming about of information available
 * Lots of others
 * Word of caution--`sf` has undergone rapid development in past ~5 years
 * Check dates on blogs, StackExchange, GitHub issues
-  
+
 
 # `sf` Package
 
+## Simple features
+* _feature_ "abstraction of real world phenomena"
+* _simple feature_ "feature with all geometric attributes described by piecewise straight lines or planar interpolation between sets of points"
+* Represents geometry using *points*, *lines*, *polygons*, or collections of those features
+* ISO standard supported by lots of software
+
 ## Basic structure
-* What is a 'feature'?
-* tibble for attribute data
-* geometry is a list column
-* can have multiple types of geometry in one object
+* `sf` objects are extended `data.frame`s or `tibble`s
+  - attribute data stored as `tibble`
+  - geometry stored as a list column
+  - can have multiple types of geometry in one object
+* class is `sfc` with bounding box `bbox` and `CRS` attributes
 
 ```{r}
-# Show an example
+# show an example
+# either code or use images of examples
+# ??? What happens if you `unnest` the geometry column?
+
+# Highlight parts
+# 1. list column (aka sfc)
+# 2. feature geometry (sfg)
+# 3. feature (row)
 ```
 
+## `sf` and `tidyverse`
+* `sf` functions begin with `st_`
+* `sf` methods for `filter`, `arrange`, `distinct`, `group_by`, `ungroup`, `mutate`,
+
 ## Manipulating objects
-* all functions begin with `st_`
 * manipulating geometry
   - summary
   - plot
@@ -165,19 +214,57 @@ There is an overwhelming about of information available
   - works well with `dplyr`
   - summarize
   - filter etc.
-  
-  
+
+```{r}
+# Example manipulations? Or wait until after reading and writing?
+```
+
+
 # Reading and Writing Data
 
 ## Reading shapefiles
 * super straightforward...
+```{r}
+fileloc <- system.file("shape/nc.shp", package = "sf")
+nc <- read_sf(fileloc)
+print(nc, n = 3)
+plot(nc, max.plot = 4)
+```
+We can see that projection information is stored with the shapefile
+```{r}
+st_crs(nc)
+```
 
 ## Converting lat/lon data to spatial object
+[see this link for info](https://edzer.github.io/UseR2017/)
+* `st_transform` transforms or converts coordinates to new reference system
+```{r}
+(a1 <- st_area(nc[1,]))) # area, using geosphere::areaPolygon
+(a2 <- st_area(st_transform(nc[1, ], 32119))) # NC state plane, m
+(a3 <- st_area(st_transform(nc[1,], 2264))))  # NC state plane, US foot
+
+units::set_units(a1, km^2)
+units::set_units(a2, km^2)
+units::set_units(a3, km^2)
+```
+
 * need to set crs
 https://georepository.com/crs_32619/WGS-84-UTM-zone-19N.html
 https://spatialreference.org/ref/epsg/2033/
 
+## Reference systems
+* handle coordinate systems, convert coordinates (do projections), and do datum transformations
+* `crs` object contains this information
+* Proj.4 string contains this info
+```{r}
+st_crs("+proj=longlat +datum=WGS84") # Proj.4 string"
+st_crs(3857)                         # ESPG code
+st_crs(3857)$units                   # check units
+st_crs(NA)                           # unknown (assumed planar/Cartesian)
+```
+
 ## Other data sources
+* Convert other `Spatial*` objects using `st_as_sf`
 * Download online (US Map...others?)
 * So much in packages
 * `naturalearth`
@@ -194,21 +281,31 @@ https://spatialreference.org/ref/epsg/2033/
 
 # Geometric operations
 
-## So much functionality!
-* grids, intersections, sampling...
-* derived quantities
-* separate into things that function on 1 object vs. 2+
+## Geometric operations
+Single
+* logical predicates: (e.g., `is_valid`, `is_simple`)
+* quantities: (`length`, `area`)
+* dimensions: 0 = points, 1 = linear, 2 = surface
+* derived geometries: `buffer`, `centroid`, `convex_hull` etc.
+
+Pairs or sets
+* predicates: `intersects`, `within`, `contains` etc.
+* quantities: `distance`
+* new geometries: `intersection`, `difference`, `union` etc.
+
+CHECK: what does predicate mean?
 
 ## Give some examples...
 
 ## Exercises
 1. How many points are within 10 km of this river?
-2. Create a 1 km x 1 km sampling grid and randomly select 10 survey locations. 
+2. Create a 1 km x 1 km sampling grid and randomly select 10 survey locations.
 
 
 # Making maps with `sf` and `ggplot2`
 
 ## Basics
+* interfaces with `ggplot2` using `geom_sf`
 
 ## Using multiple types of data
 
@@ -218,3 +315,12 @@ https://spatialreference.org/ref/epsg/2033/
 
 ## Adding compass rose and scale
 
+
+
+# What about other types of data?
+
+## `stars`
+* support for raster and vector data cubes (arrays)
+* support for long time series on vector data
+* deal with data sets larger than local memory
+* finished 2018 (??)
