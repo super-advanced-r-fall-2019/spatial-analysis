@@ -13,6 +13,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
+library("rnaturalearth")
 library("tidyverse")
 library("sf")
 ```
@@ -239,9 +240,9 @@ st_crs(nc)
 [see this link for info](https://edzer.github.io/UseR2017/)
 * `st_transform` transforms or converts coordinates to new reference system
 ```{r}
-(a1 <- st_area(nc[1,]))) # area, using geosphere::areaPolygon
+(a1 <- st_area(nc[1,])) # area, using geosphere::areaPolygon
 (a2 <- st_area(st_transform(nc[1, ], 32119))) # NC state plane, m
-(a3 <- st_area(st_transform(nc[1,], 2264))))  # NC state plane, US foot
+(a3 <- st_area(st_transform(nc[1,], 2264)))  # NC state plane, US foot
 
 units::set_units(a1, km^2)
 units::set_units(a2, km^2)
@@ -324,3 +325,4 @@ CHECK: what does predicate mean?
 * support for long time series on vector data
 * deal with data sets larger than local memory
 * finished 2018 (??)
+* more info [here](https://r-spatial.github.io/stars/)
