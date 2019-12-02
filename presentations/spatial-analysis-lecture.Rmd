@@ -1,0 +1,425 @@
+---
+title: "Spatial Analysis"
+subtitle: "FSH 507 Fall 2019"
+author: "Elizabeth Ng"
+date: " `r Sys.Date()`"
+output:
+  ioslides_presentation:
+    smaller: true
+  powerpoint_presentation: default
+  html_document: default
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, collapse = TRUE)
+
+library("rnaturalearth")
+library("tidyverse")
+library("sf")
+library("here")
+library("htmltab") # scrape html data
+```
+
+## Overview
+1. Motivation
+2. Brief intro to generic spatial data
+3. Brief intro to spatial capabilities in R
+4. Intro to the sf package
+5. Reading and writing spatial data with `sf`
+6. Geometric operations with `sf`
+7. Making maps with `sf` and `ggplot2`
+
+## Motivation
+
+```{r echo = FALSE, fig.align="center"}
+knitr::include_graphics(here("imgs", "arc-to-R-workflow.gif"))
+```
+
+
+# Spatial analysis
+
+## Why spatial data?
+* Interesting spatial questions
+* Earth is round-ish/spherioid
+* Maps and screens are flat, so we only see projected data
+* Projected distances, areas, shapes, and directions are distorted
+
+## Reference systems
+* [Geodesic/geographic coordinates](https://edzer.github.io/rstudio_conf/#6) need
+  - Order (lat/long vs long/lat)
+  - Units (rad, arc_degree)
+  - Datum (aka reference ellipsoid)
+    <!-- * how are we describing the shape of the Earth? -->
+    <!-- * "best" approximation depends on region and scale -->
+    <!--   - what origin is used? -->
+    <!--   - tectonic plates move over time -->
+    <!--   - e.g., WGS84, is an approximate model of Earth at sea level updated in 2004 -->
+* [Cartesian/projected coordinates](https://www.axismaps.com/guide/general/map-projections/) need
+  - Units (km, m)
+  - Relationship to a datum/geodesic coordinates
+  - How to display 3D object in 2D
+  - Accurately display one of: area (Mercator), form (Azimuthal Equidistant), distance (Equirectangular)
+  <!-- - choice depends on what you're conveying, shape of the region -->
+  <!-- - e.g., use Tranverse Mercator for mapping long N-S region like Chile -->
+* Two separate issues: how do we model Earth (datum) and how do we display it on a flat surface (projection)
+
+
+<!-- ## Models of a round-ish Earth -->
+<!-- * There are different models of the Earth -->
+<!-- * Meaning of coordinates (lon/lat) depend on the geodetic datum -->
+<!-- * "_Geodetic datum_ is a coordinate reference system and a set of reference points used to locate places on Earth"[Wikipedia](https://en.m.wikipedia.org/wiki/Geodetic_datum) -->
+<!-- * "a datum is unlikely important when mapping continents, but it is when when drones try to deliver pizza" -[Edzer Pebesma]https://edzer.github.io/rstudio_conf/#6) -->
+<!-- * Depend on the scale (big or small matter more? where you are matters?) -->
+<!-- * On one hand, small areas are more easily modeled as a flat surface -->
+<!-- * But get your model wrong from continent to drone delivery matters -->
+<!-- * Model is described in a coordinate reference system (CRS) -->
+<!-- * Two types -->
+<!--   - geographic CRS (lon/lat) gives distance from the origin in degrees -->
+<!--   - projected CRS (easting/northing) gives distance from the origin in km -->
+<!-- - [ ] Datum?? -->
+
+## Representation of spatial data
+- *Vector data model* uses points, lines, and polygons
+- *Raster data model* divides surface into cells of constant size
+- Non spatial attribute data
+  - How many counts at a point?
+  - Length of a transect
+  - Land-cover type of a polygon
+
+## Things we want from spatial software
+> 1. Read/write spatial data
+> 2. Represent geographic and attribute data
+> 3. Transform between different models of Earth
+> 4. Geographic operations
+> 5. Make maps
+
+
+# Spatial analysis in R
+
+## R packages for spatial analysis
+- [Many tools for spatial analysis in R](https://cran.r-project.org/web/views/Spatial.html)
+- `rgdal` released in 2003--import from more geographic data formats
+- `sp` released in 2005--creates spatial objects with classes and generic methods for points, lines, polygons, grids, and attribute data (but still lacked ability to do geometric operations)
+- `raster` released in 2010--support for raster operations and more
+
+## R packages linking to GIS software
+- `GRASS`, `spgrass6`, and `rgrass7`
+- `RSAGA`, `RPyGeo`, and `RQGIS`
+
+## Visualization
+- `ggplot2`
+- `ggmap`
+- `rasterVis`
+- `tmap`
+- `leaflet`
+- `mapview`
+
+## My choice: `sf`
+* Developed in 2016 with support from [R consortium](https://github.com/r-spatial/sf/blob/master/PROPOSAL.md)
+* Based on [simple features ISO standards](https://en.wikipedia.org/wiki/Simple_Features) that are not R specific
+* Replaces `sp`, `rdgal` for read/write, and `rgeos` for geometric operations
+* Integrates well with `tidyverse`
+
+## Resources
+* [Simple Features package](https://r-spatial.github.io/sf/index.html)
+  - Vignettes, blogs, presentations
+  - [Cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/sf.pdf)
+  - [issue tracker](https://github.com/r-spatial/sf/issues/)
+* [r-spatial](https://www.r-spatial.org/about/) Edzer Pebesma's blog
+* [Spatial Data Science](https://keen-swartz-3146c4.netlify.com/)
+* [Geocomputation with R](https://geocompr.robinlovelace.net/)
+  - excellent in-depth treatment
+  - includes theory, examples, and covers rasters
+
+
+
+
+# `sf` package
+
+## Simple features
+* _feature_ "abstraction of real world phenomena"
+* _simple feature_ "feature with all geometric attributes described by piecewise straight lines or planar interpolation between sets of points"
+* Represents geometry using *points*, *lines*, *polygons*, or collections of those features
+* ISO standard supported by lots of software
+
+## Basic structure
+* `sf` objects are extended `data.frame`s or `tibble`s
+  - attribute data stored as `tibble`
+  - geometry stored as a list column
+  - can have multiple types of geometry in one object
+* class is `sfc` with bounding box `bbox` and `CRS` attributes
+
+---
+
+```{r}
+fileloc <- system.file("shape/nc.shp", package = "sf")
+nc <- read_sf(fileloc) %>%
+  select(AREA, NAME)
+print(nc)
+
+# Highlight parts
+# 1. list column (aka sfc)
+# 2. feature geometry (sfg)
+# 3. feature (row)
+```
+
+## `sf` and `tidyverse`
+* `sf` functions begin with `st_`
+* Methods for `summary`, `plot`
+* `sf` methods for `filter`, `arrange`, `distinct`, `group_by`, `ungroup`, `mutate`
+
+
+---
+```{r echo = TRUE}
+st_geometry(nc) %>% plot
+```
+
+---
+```{r echo = TRUE}
+# Default methods for objects
+plot(nc)
+```
+
+---
+```{r echo = TRUE}
+filter(nc, AREA > 0.2)
+```
+
+
+# Reading and writing data
+
+## Reading shapefiles
+```{r echo = TRUE}
+fileloc <- system.file("shape/nc.shp", package = "sf")
+nc <- read_sf(fileloc)
+```
+
+We can see that projection information is stored with the shapefile
+```{r echo = TRUE}
+st_crs(nc)
+```
+
+* used to convert coordinates (do projections) and do datum transformations
+* Proj.4 string or ESPG code contains this info
+* [Web](https://spatialreference.org/) [repositories](https://georepository.com/home.html) for ESPG and Proj.4 information
+
+---
+```{r echo = TRUE}
+st_crs("+proj=longlat +datum=WGS84") # Proj.4 string"
+st_crs(3857)                         # ESPG code
+st_crs(3857)$units                   # check units
+st_crs(NA)                           # unknown (assumed planar/Cartesian)
+```
+
+---
+* `st_transform` transforms or converts coordinates to [new reference system](https://edzer.github.io/UseR2017/)
+```{r echo = TRUE}
+(a1 <- st_area(nc[1,])) # area, using geosphere::areaPolygon
+(a2 <- st_area(st_transform(nc[1, ], 32119))) # NC state plane, m
+(a3 <- st_area(st_transform(nc[1,], 2264)))   # NC state plane, US foot
+```
+
+---
+```{r echo = TRUE}
+units::set_units(a1, km^2)
+units::set_units(a2, km^2)
+units::set_units(a3, km^2)
+```
+
+
+## Other data sources
+> * Convert from other `Spatial*` objects using `st_as_sf`
+> * Convert long/lat data
+> * Packages such as `rnaturalearth`
+
+## Convert long/lat data
+```{r warning = FALSE}
+# Scrape some lat/lon data (see example at https://ryanpeek.github.io/2017-08-03-converting-XY-data-with-sf-package/)
+url <- "http://www.hotspringsdirectory.com/usa/ca/gps-usa-ca.html"
+df <- htmltab(url, which = 1, header = 1,
+              colNames = c("STATE","LAT","LONG","SpringName","Temp_F", "Temp_C", "AREA", "USGS_quad"))
+hotsprings_df <- df %>%
+  as_tibble() %>%
+  mutate(LAT = as.numeric(LAT),
+         LONG = as.numeric(LONG),
+         Temp_F = as.numeric(Temp_F),
+         Temp_C = as.numeric(Temp_C),
+         LONG = -LONG) %>%
+  na.omit()
+```
+
+```{r, echo = TRUE}
+head(hotsprings_df)
+```
+
+## Convert long/lat data
+Assume that these data are WGS84 (`crs = 4326`)
+```{r, echo = TRUE}
+hotsprings <- st_as_sf(hotsprings_df,
+                       coords = c("LONG", "LAT"),
+                       crs = 4326)
+head(hotsprings)
+```
+
+
+## Data from packages
+```{r, echo = TRUE}
+world <- ne_countries(scale = "medium", returnclass = "sf")
+st_geometry(world) %>% plot()
+```
+
+## Writing data
+* shapefiles
+* database connections
+* use `st_write`
+
+## Exercises
+1. Load the Lake Tahoe shapefile (`data\h8_tahoe`). What is the `crs`? Plot the geometry.
+2. Upload `boat-launch-sites.csv` and plot the geometry. Save it as a shapefile. 
+
+## Exercise 1
+```{r echo = TRUE}
+tahoe <- read_sf(here("data", "h8_tahoe"))
+st_crs(tahoe)
+st_geometry(tahoe) %>% plot()
+```
+
+## Exercise 2
+```{r echo = TRUE}
+boats <- read.csv(here("data", "boat-launch-sites.csv"))
+boats_spatial <- st_as_sf(boats,
+                       coords = c("lon", "lat"),
+                       crs = 4326)
+st_geometry(boats_spatial) %>% plot
+```
+
+## Exercise 2
+```{r echo = TRUE}
+dir.create(here("data", "boat-launch-sites"))
+st_write(boats_spatial, here("data", "boat-launch-sites", "boat-launch-sites.shp"))
+```
+
+
+
+# Geometric operations
+
+## Types of geometric operations
+Single
+
+* logical predicates: (e.g., `is_valid`, `is_simple`)
+* quantities: (`length`, `area`)
+* dimensions: 0 = points, 1 = linear, 2 = surface
+* derived geometries: `buffer`, `centroid`, `convex_hull` etc.
+
+Pairs or sets
+
+* predicates: `intersects`, `within`, `contains` etc.
+* quantities: `distance`
+* new geometries: `intersection`, `difference`, `union` etc.
+
+
+## Methods for simple features
+```{r, echo = TRUE}
+methods(class = "sf")
+```
+
+```{r}
+nc <- st_transform(nc, 32119) # NC state plane, m
+```
+
+## Logical operations
+```{r, echo = TRUE}
+nc1 <- nc[1:5, ]
+st_intersects(nc1, nc1, sparse = FALSE)
+```
+
+## Geometry generating operations
+```{r, echo = TRUE}
+opar <- par(mfrow = c(1,2))
+ncg <- st_geometry(nc[1:3,])
+plot(ncg, col = sf.colors(3, categorical = TRUE))
+
+u <- st_union(ncg)
+plot(u, lwd = 2)
+
+plot(st_intersection(ncg[1], ncg[2]), col = 'red', add = TRUE) # border
+plot(st_buffer(u, 10000), border = 'blue', add = TRUE)  # outer buffer
+plot(st_buffer(u, -5000), border = 'green', add = TRUE) # inner buffer
+```
+
+```{r}
+par(mfrow = c(1,1))
+```
+
+
+## More complicated example
+Where in North Carolina do four counties touch?
+```{r}
+plot(st_geometry(nc))
+```
+
+
+---
+```{r, echo = TRUE}
+pts <-  st_intersection(nc, nc)
+pts <- pts[st_dimension(pts) == 0, ] # dim of point intersection is 0
+plot(st_geometry(nc))
+plot(st_geometry(pts), add = TRUE, col = '#ff000044', pch = 16)
+```
+
+
+
+## Exercise
+How many hot springs are in Lake Tahoe?
+
+## Solution
+```{r, echo = TRUE}
+hotsprings <- st_transform(hotsprings, 2228) # California zone 3
+tahoe <- st_transform(tahoe, 2228)
+tahoe_hotsprings <- st_intersection(tahoe, hotsprings)
+
+plot(st_geometry(hotsprings))
+plot(st_geometry(tahoe), add = TRUE, col = "blue")
+plot(st_geometry(tahoe_hotsprings), add = TRUE, col = "red")
+```
+
+
+
+
+# Making maps with `sf` and `ggplot2`
+
+## Basics
+* interfaces with `ggplot2` using `geom_sf`
+
+---
+```{r}
+hotsprings <- st_transform(hotsprings, 4326) # California zone 3
+tahoe <- st_transform(tahoe, 4326)
+```
+
+
+```{r echo = TRUE}
+ggplot() +
+  geom_sf(data = tahoe, fill = "light blue") +
+  geom_sf(data = hotsprings, size = 4, shape = 23, fill = "darkred") +
+  coord_sf(xlim = c(-121, -119), ylim = c(38, 40))
+```
+
+## More complicated
+
+<img src=https://timogrossenbacher.ch/wp-content/uploads/2019/04/bm-thematic-bivariate-map-with-legend-1-2-1024x768.png" width ="600"/> 
+
+[Timo Grossenbacher](https://timogrossenbacher.ch/2019/04/bivariate-maps-with-ggplot2-and-sf/)
+
+## Exercise
+Work through [this example from r-spatial](https://www.r-spatial.org/r/2018/10/25/ggplot2-sf.html)
+
+# What about other types of data?
+
+## `stars`
+* support for raster and vector data cubes (arrays)
+* support for long time series on vector data
+* deal with data sets larger than local memory
+* finished 2018 (??)
+* more info [here](https://r-spatial.github.io/stars/)

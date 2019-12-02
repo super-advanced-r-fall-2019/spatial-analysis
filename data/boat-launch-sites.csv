@@ -1,0 +1,125 @@
+Type,Name,County,MLPA_SR,lon,lat
+Launch Ramp,Chula Vista Ramp,San Diego,SCSR,-117.1033707939349,32.62127101746105
+Launch Ramp,National City (Pepper Park Ramp),San Diego,SCSR,-117.11091597129361,32.64995385486329
+Launch Ramp,Glorietta Bay Boat Launching Ramp,San Diego,SCSR,-117.1694585437404,32.675861465633695
+Launch Ramp,Shelter Island Boat Launching Ramp,San Diego,SCSR,-117.22335384906462,32.71562014625072
+Launch Ramp,Mission Bay - South Shores BLF,San Diego,SCSR,-117.21783322133487,32.76422951212032
+Launch Ramp,Mission Bay - Dana Landing BLF,San Diego,SCSR,-117.23453356591607,32.76685602945406
+Launch Ramp,Mission Bay - Ski Beach BLF,San Diego,SCSR,-117.233202033929,32.77320923621205
+Launch Ramp,Mission Bay - Santa Clara Point  BLF,San Diego,SCSR,-117.24975443933475,32.782533213181
+Launch Ramp,Campland on the Bay,San Diego,SCSR,-117.22370136829836,32.794406711700745
+Launch Ramp,Mission Bay - De Anza Cove BLF,San Diego,SCSR,-117.20925353720448,32.79331934850439
+Launch Ramp,Oceanside Harbor (Boat Launch Facility),San Diego,SCSR,-117.39299579201922,33.20531019914281
+Launch Ramp,Dana Point Ramp,Orange,SCSR,-117.69199753922355,33.46084792783138
+Launch Ramp,Newport Dunes Launch Ramp,Orange,SCSR,-117.89121433015355,33.61913120408863
+Launch Ramp,Huntington Beach Boat Ramp,Orange,SCSR,-118.06139116403841,33.71254671475822
+Launch Ramp,Sunset Aquatic Marina,Orange,SCSR,-118.07682836023683,33.72880659990133
+Launch Ramp,Long Beach Marine Bureau (Marine Stadium Ramp),Los Angeles,SCSR,-118.12239704758038,33.76026202603802
+Launch Ramp,Long Beach Marine Bureau (Davies Ramp),Los Angeles,SCSR,-118.11626933438663,33.75742365086793
+Launch Ramp,Long Beach Marine Bureau (South Shore Ramp),Los Angeles,SCSR,-118.20170180600579,33.75910808409783
+Hoist,Redondo Beach Small BLF,Los Angeles,SCSR,-118.39210066410696,33.84220020080412
+Launch Ramp,Marina Del Rey Boat Launch Facility,Los Angeles,SCSR,-118.4415357177661,33.97764304913423
+Launch Ramp,Channel Islands Ventura County Small Boat Marina,Ventura,SCSR,-119.22361804442455,34.17234031152943
+Launch Ramp,Ventura Harbor Launch Ramp,Ventura,SCSR,-119.26305141097525,34.24948342225336
+Launch Ramp,Santa Barbara Waterfront and Harbor BLF,Santa Barbara,SCSR,-119.69224407863952,34.408217761417596
+Hoist,Gaviota State Park,Santa Barbara,SCSR,-120.22835049060647,34.469593707399106
+Hoist,Port San Luis Boat Launch Facility,San Luis Obispo,CCSR,-120.75571553020836,35.17175144257898
+Beach Launch,Old Port Beach,San Luis Obispo,CCSR,-120.74854117713218,35.17787292698786
+Launch Ramp,Morro Bay - Tidelands Park,San Luis Obispo,CCSR,-120.85032811216011,35.357508621384795
+Hand Launch,San Simeon S.P. Leffingwell Landing,San Luis Obispo,CCSR,-121.11914323657211,35.58128146515874
+Launch Ramp,Point Lobos Reserve,Monterey,CCSR,-121.94061136960887,36.52037159464767
+Launch Ramp,Presidio of Monterey Breakwater Launch Ramp,Monterey,CCSR,-121.89388642691142,36.60914262205794
+Launch Ramp,Monterey Harbor (Harbor Master Bldg),Monterey,CCSR,-121.89092486788219,36.60216420224415
+Launch Ramp,Moss Landing Harbor District,Monterey,CCSR,-121.78656171656517,36.81145892953643
+Launch Ramp,Kirby Park Fishing Access,Monterey,CCSR,-121.74358481585816,36.83991099505031
+Hoist,Capitola Boat and Bait Marina,Santa Cruz,CCSR,-121.95319642032344,36.969245700065365
+Launch Ramp,Santa Cruz Port District (SC Harbor),Santa Cruz,CCSR,-122.00101661847653,36.963961906921604
+Launch Ramp,Pillar Point Boat Launching Facility,San Mateo,NCCSR,-122.47750847962088,37.50228404004979
+Beach Launch,Lawson's Landing,Marin,NCCSR,-122.96817609955352,38.231978690431
+Launch Ramp,Miller Park BLF,Marin,NCCSR,-122.92155614307171,38.19990816643524
+Launch Ramp,Westside Regional Park,Sonoma,NCCSR,-123.05501110492817,38.32299444218956
+Launch Ramp,Doran Regional Park,Sonoma,NCCSR,-123.05374612321489,38.3102598518474
+Launch Ramp,Jenner Visitors Center Boat Ramp,Sonoma,NCCSR,-123.1156995410946,38.44934356974434
+Launch Ramp,Ocean Cove Store & Campground,Sonoma,NCCSR,-123.30363021539814,38.55472037335496
+Hand Launch,Salt Point SP,Sonoma,NCCSR,-123.33042082831606,38.56740583474262
+Hand Launch,Anchor Bay Campground,Mendocino,NCCSR,-123.57985887953511,38.80283688170782
+Hoist,Point Arena Municipal Pier,Mendocino,NCCSR,-123.71082694100335,38.9145734564948
+Launch Ramp,Schooner's Landing Marina,Mendocino,NCSR,-123.75939425547922,39.233399097718326
+Beach Launch,Albion River Campground and Marina,Mendocino,NCSR,-123.76566103475545,39.22662073516369
+Launch Ramp,Noyo River BLF (Noyo Harbor District),Mendocino,NCSR,-123.79856391411248,39.426674775463695
+Beach Launch,Mario's Marina (former Lost Coast Landing),Humboldt,NCSR,-124.06620493270195,40.024170453313495
+Launch Ramp,Pedrazzini Boat Ramp,Humboldt,NCSR,-124.28267152474518,40.63749068478383
+Hand Launch,Hookton Slough BTAF,Humboldt,NCSR,-124.22192547586275,40.67726238273741
+Launch Ramp,Field's Landing County Boat Ramp,Humboldt,NCSR,-124.22098693889166,40.726197149305946
+Launch Ramp,Samoa Boat Ramp County Park,Humboldt,NCSR,-124.21253126628869,40.7720389222871
+Launch Ramp,Highway 255 Bridge Boat Ramp,Humboldt,NCSR,-124.15421396938973,40.80806954962411
+Launch Ramp,Arcata Marsh Wildlife Sanctuary,Humboldt,NCSR,-124.09853719125051,40.85617939328215
+Hoist,Seascape Trinidad Harbor,Humboldt,NCSR,-124.14709702685832,41.055186958594895
+Launch Ramp,Big Lagoon County Park Boat Ramp,Humboldt,NCSR,-124.13070523712429,41.1639351195485
+Launch Ramp,Humboldt Lagoons State Park,Humboldt,NCSR,-124.08380026992037,41.23325411932074
+Beach Launch,Stone Lagoon Boat Ramp,Humboldt,NCSR,-124.09791818165783,41.25778045411196
+Beach Launch,Anglers' Cove Campground,Del Norte,NCSR,-124.0603192828306,41.54729125858703
+Beach Launch,Requa Resort,Del Norte,NCSR,-124.0705773628289,41.545341046459704
+Beach Launch,Chinook RV Resort,Del Norte,NCSR,-124.05220460606225,41.54150608675188
+Launch Ramp,Old Townsite Boat Ramp  (Klamath Townsite),Del Norte,NCSR,-124.04459853958294,41.53132572994336
+Beach Launch,Riverside RV Park,Del Norte,NCSR,-124.04194307632063,41.52374643709578
+Beach Launch,Klamath Glen Resort,Del Norte,NCSR,-123.99616935333057,41.5052084123363
+Hand Launch,Lake Earl Boat Launch Facility (Department of Fish & Game),Del Norte,NCSR,-124.18068657007855,41.813433745889874
+Launch Ramp,Cresent City Harbor Ramp,Del Norte,NCSR,-124.18264067788229,41.741911663163776
+Beach Launch,Salmon Harbor RV Resort,Del Norte,NCSR,-124.20026973694775,41.94547465452514
+Hoist,Goleta Beach County Park,Santa Barbara,SCSR,-119.82831355966164,34.413121219744
+Launch Ramp,Pier 54 & Pier 52 BLF,San Francisco,SFBSR,-122.38611588971355,37.77123297998726
+Hand Launch,Islais Creek BTAF,San Francisco,SFBSR,-122.38815007790095,37.7467800820333
+Launch Ramp,Parkside Aquatic Park,San Mateo,SFBSR,-122.29108948920462,37.55946968426917
+Launch Ramp,Seal Point Park BTAF,San Mateo,SFBSR,-122.30039149861496,37.575705339523815
+Launch Ramp,Boat Park (Foster City),San Mateo,SFBSR,-122.25968627229561,37.555672484525864
+Launch Ramp,Leo J Ryan Memorial Park (Foster City),San Mateo,SFBSR,-122.26815875353788,37.55558532446222
+Launch Ramp,Redwood City Marina BLF,San Mateo,SFBSR,-122.21467140067546,37.502614622048654
+Launch Ramp,Port of Redwood City Launch Ramp,San Mateo,SFBSR,-122.2111635080862,37.50854034536562
+Hand Launch,The Baylands Sailing Station,Santa Clara,SFBSR,-122.10108054500655,37.45768430396558
+Launch Ramp,Alviso Marina County Park BLF,Santa Clara,SFBSR,-121.98165516488122,37.42916440735426
+Launch Ramp,San Leandro Shoreline Recreation Area,Alameda,SFBSR,-122.18782346647939,37.695772153447315
+Launch Ramp,Martin Luther King Jr. Regional Shoreline,Alameda,SFBSR,-122.21405635829967,37.73894483697607
+Hand Launch,Alameda Fishing Access,Alameda,SFBSR,-122.27920650748321,37.76750300453284
+Launch Ramp,Alameda Encinal BLF,Alameda,SFBSR,-122.29073582323277,37.76943752312792
+Launch Ramp,Lake Merritt Channel - Estuary Channel Park,Alameda,SFBSR,-122.26470530167782,37.790788884524495
+Launch Ramp,Emeryville City Marina,Alameda,SFBSR,-122.31302738552611,37.838544345496516
+Launch Ramp,Berkeley Public Boat Ramp,Alameda,SFBSR,-122.31752501134085,37.8683082028556
+Launch Ramp,Marina Bay Yacht Harbor - Richmond Marina,Contra Costa,SFBSR,-122.35445024266974,37.914275457906186
+Launch Ramp,Boat Ramp Street BTAF,Contra Costa,SFBSR,-122.37582349969065,37.92467793225811
+Launch Ramp,Martinez Marina,Contra Costa,SFBSR,-122.13730973837045,38.02584414250512
+Launch Ramp,McAvoy Yacht Harbor,Contra Costa,SFBSR,-121.96052364078957,38.04022523967155
+Launch Ramp,Pittsburg Marina,Contra Costa,SFBSR,-121.88449178589396,38.037929574555406
+Launch Ramp,Beldon's Landing,Solano,SFBSR,-121.9761564190943,38.18828623031326
+Launch Ramp,Suisun City Boat Ramp,Solano,SFBSR,-122.03795605525053,38.23299574026313
+Launch Ramp,Pierce Harbor Marina,Solano,SFBSR,-122.10025198873983,38.1255560097013
+Launch Ramp,West 9th Street Launch Ramp,Solano,SFBSR,-122.17442952924706,38.05799834909735
+Launch Ramp,Benicia Marina,Solano,SFBSR,-122.15351852612753,38.04461087319157
+Launch Ramp,Brinkman's Marine; Inc.,Solano,SFBSR,-122.2580869170286,38.0958844397415
+Launch Ramp,Vallejo Municipal Marina,Solano,SFBSR,-122.27003866484391,38.110693931035705
+Launch Ramp,Napa Valley Marina,Napa,SFBSR,-122.31386120521626,38.220712139277055
+Launch Ramp,Cuttings Wharf,Napa,SFBSR,-122.30786175094241,38.22612691722922
+Launch Ramp,Napa Sea Ranch,Napa,SFBSR,-122.30948221491141,38.22409662394937
+Launch Ramp,Kennedy Park,Napa,SFBSR,-122.2838085157231,38.26550495769678
+Launch Ramp,Hudeman Slough Fishing Access,Sonoma,SFBSR,-122.37545627241707,38.20621364295872
+Launch Ramp,Petaluma Marina,Sonoma,SFBSR,-122.61488649013783,38.23115286225376
+Launch Ramp,Petaluma River Public Fishing Access (Black Point),Marin,SFBSR,-122.50640737345819,38.114444461408745
+Launch Ramp,Buck's Landing,Marin,SFBSR,-122.50328882688189,38.01581792493065
+Launch Ramp,Loch Lomond Marina,Marin,SFBSR,-122.4841743375225,37.972843024248924
+Launch Ramp,Clipper Yacht Harbor,Marin,SFBSR,-122.49750182765888,37.868670878590564
+Launch Ramp,Antioch Public Launch Ramp,Contra Costa,SFBSR,-121.80285793548286,38.017338426367075
+Launch Ramp,Lower Sherman Island Fishing Access,Sacramento,SFBSR,-121.78565598974701,38.05609111296757
+Launch Ramp,Big Break Marina,Contra Costa,SFBSR,-121.73271204445396,38.01270962411653
+Launch Ramp,Lauritzen Yacht Harbor,Contra Costa,SFBSR,-121.74725277060935,38.01700534787762
+Hoist,Stillwater Cove,Monterey,CCSR,-121.94283202699873,36.56599951644984
+Launch Ramp,California Water Sports/Snug Harbor Marina,San Diego,SCSR,-117.3322943931914,33.147899561120376
+Hoist,Avalon Pleasure,Los Angeles,SCSR,-118.32480230520551,33.34399160092179
+Launch Ramp,Long Beach Marine Bureau (Claremont Ramp),Los Angeles,SCSR,-118.13125790257611,33.754029609286725
+Hand Launch,Long Beach Marine Bureau (Granada Ramp),Los Angeles,SCSR,-118.13949240017008,33.754912350266636
+Launch Ramp,Cabrillo,Los Angeles,SCSR,-118.28402761049094,33.71337623028698
+Launch Ramp,King Salmon Resort,Humboldt,NCSR,-124.21760623076784,40.737447699895014
+Launch Ramp,Eureka Public Marina,Humboldt,NCSR,-124.17627047761385,40.803632181882065
+Hoist,Woodley Island Marina,Humboldt,NCSR,-124.16402443784324,40.80798746816704
+Launch Ramp,Mad River Beach,Humboldt,NCSR,-124.12974764096377,40.92895992695779
+Beach Launch,Freshwater Lagoon,Humboldt,NCSR,-124.09327602227357,41.27763296659887
+Hoist,Crescent City Harbor,Del Norte,NCSR,-124.1832344543736,41.7494416333943
